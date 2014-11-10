@@ -59,7 +59,7 @@ while sequence_number <= num_pings:
   recieved_array = recieved.split(' ')
   recieved_type = recieved_array[0].upper()
   #print recieved_type
-  recieved_seq = recieved_array[1]
+  recieved_seq = int(recieved_array[1])
   recieved_time = int(recieved_array[2])
   #print recieved_time
   rtt = get_time() - recieved_time
