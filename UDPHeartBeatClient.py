@@ -9,17 +9,14 @@ serverSocket = socket(AF_INET, SOCK_DGRAM)
 # Assign IP address and port number to socket
 serverSocket.settimeout(1.0)
 serverSocket.bind(('127.0.0.1', 1024))
-clock = int(round(time.time() * 1000))
+last_send = int(round(time.time() * 1000))
 sequence_number = 1
-min_rtt = 0
-max_rtt = 0
-avg_rtt = 0
-packets_dropped = 0.0
-total_packets = 0.0
-while sequence_number <= 10:
+while True:
   clock = int(round(time.time() * 1000))
-  serverSocket.sendto('PING ' + str(sequence_number) + ' ' + str(clock), ('127.0.0.1', 12000))
-  total_packets = total_packets + 1
+  # if it's been a second, send another ping as a heartbeat
+  if clock > last_send + 1000:
+    serverSocket.sendto('PING ' + str(sequence_number) + ' ' + str(clock), ('127.0.0.1', 12000))
+    total_packets = total_packets + 1
   # Generate random number in the range of 0 to 10 rand = random.randint(0, 10)
   # Receive the client packet along with the address it is coming from
   try:
@@ -39,7 +36,3 @@ while sequence_number <= 10:
   print "RTT: " + str(rtt)
   last = message
   sequence_number = sequence_number + 1
-print "Min RTT: " + str(min_rtt)
-print "Max RTT: " + str(max_rtt)
-print "Avg RTT: " + str(avg_rtt/10)
-print "Packet Loss: " + str(packets_dropped/total_packets*100) + "%"
